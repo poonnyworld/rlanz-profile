@@ -1,35 +1,46 @@
-import { Youtube, Twitch, Facebook, Instagram } from 'lucide-react';
+import { Music2 } from 'lucide-react';
 
 export const talentData = {
     // ข้อมูลส่วนตัว
     profile: {
-        name: "RLanz", // ชื่อ VTuber
-        role: "🇹🇭 VTUBER | COVER ARTIST & GAMER", // ตำแหน่ง/สไตล์
+        name: "yuminyui", // ชื่อ VTuber
+        role: "🇹🇭 VTuber | VToker", // ตำแหน่ง/สไตล์
         image: "/images/model.png", // รูปหลัก (ใช้สำหรับ fallback)
         images: [
-            "/images/model.png", // รูปที่ 1
-            "/images/model2.png", // รูปที่ 2 (ถ้ามี)
-            "/images/model3.png", // รูปที่ 3 (ถ้ามี)
-            "/images/model4.png", // รูปที่ 4 (ถ้ามี)
-            "/images/model5.png", // รูปที่ 5 (ถ้ามี)
+            "/images/model.gif", // รูปที่ 1
+            "/images/model2.gif", // รูปที่ 2 (ถ้ามี)
+            "/images/model3.gif", // รูปที่ 3 (ถ้ามี)
+            "/images/model4.gif", // รูปที่ 4 (ถ้ามี)
+            "/images/model5.gif", // รูปที่ 5 (ถ้ามี)
+            "/images/model6.gif", // รูปที่ 5 (ถ้ามี)
             // เพิ่มรูปเพิ่มเติมได้ที่นี่
         ],
         logo: "/images/logo.png", // เอารูปโลโก้ไปวางใน folder public/images/ แล้วแก้ชื่อไฟล์ตรงนี้ (ถ้าไม่มีจะแสดง "LOGO" แทน)
-        themeColor: "text-pink-400", // สีหลัก (text-pink-400, text-blue-400, text-purple-400)
-        bgColor: "from-violet-900 to-indigo-950", // สีพื้นหลังฝั่งซ้าย
+        themeColor: "text-pink-500", // สีหลัก (text-pink-400, text-blue-400, text-purple-400)
+        bgColor: "from-pink-200 via-sky-100 to-white", // สีพื้นหลังฝั่งซ้าย
+    },
+
+    // SEO และ Social Sharing
+    seo: {
+        title: "yuminyui - VTuber Rate Card | Professional Collaboration Services",
+        description: "THAI VTuber | VToker - Professional collaboration services including Sponsored Livestream, Voice Over, Dedicated Long Video, and Social Media Posts. Contact for brand partnerships.",
+        keywords: "VTuber, Thai VTuber, yuminyui, Rate Card, Collaboration, Brand Partnership, Sponsored Content, Livestream, Voice Over",
+        author: "yuminyui",
+        siteName: "yuminyui Rate Card",
+        image: "/images/model.png",
+        locale: "th_TH"
     },
 
     // สถิติ Social Media
     socials: [
-        { platform: "YouTube", icon: Youtube, count: "1618", color: "text-red-500", url: "https://www.youtube.com/@rlanz_tn" },
-        { platform: "Twitch", icon: Twitch, count: "2,800", color: "text-purple-500", url: "https://www.twitch.tv/rlanz_tarima" }
+        { platform: "TikTok", icon: Music2, count: "37,200", color: "text-cyan-400", url: "https://www.tiktok.com/@yuminyui" }
     ],
 
-    // สถิติคนดู (3 ช่องบนขวา) - ค่าเฉลี่ยจากทั้ง YouTube และ Twitch
+    // สถิติคนดู (3 ช่องบนขวา) - ข้อมูลจาก TikTok
     stats: [
-        { label: "Male Audience", labelEn: "Male Audience", value: "93.3%", iconColor: "text-pink-400" },
-        { label: "Age Range", labelEn: "Age Range", value: "25-34", iconColor: "text-yellow-400" },
-        { label: "Peak Time", labelEn: "Peak Time", value: "19:00+", iconColor: "text-blue-400" },
+        { label: "ผู้ชมเพศชาย", labelEn: "Male Audience", value: "73%", iconColor: "text-pink-400" },
+        { label: "ช่วงอายุหลัก", labelEn: "Top Age Range", value: "25-34 (38%)", iconColor: "text-yellow-400" },
+        { label: "ผู้ชมจากไทย", labelEn: "Audience from Thailand", value: "94%", iconColor: "text-blue-400" },
     ],
 
     // รายการบริการและราคา
@@ -38,7 +49,7 @@ export const talentData = {
             title: "Sponsored Livestream",
             description: "ไลฟ์สตรีมเล่นเกม หรือพูดคุยเกี่ยวกับสินค้า (1 ชั่วโมง)",
             descriptionEn: "Livestream gaming or product discussion (1 hour)",
-            price: "฿1,500",
+            price: "฿2,500",
             unit: "per hour",
             details: ["รวม Logo บน Overlay", "Shoutout สินค้า 3 ครั้ง", "แปะลิงก์ใน Chat & Description"],
             detailsEn: ["Logo on overlay", "Product shoutout 3 times", "Link in chat & description"]
@@ -56,7 +67,7 @@ export const talentData = {
             title: "Dedicated Long Video",
             description: "ทำวิดีโอแบบยาวเฉพาะสำหรับแบรนด์ (5-15 นาที)",
             descriptionEn: "Create long videos specifically for brands (5-15 minutes)",
-            price: "Start ฿2,500",
+            price: "Start ฿3,200",
             unit: "per video",
             details: ["สคริปต์และเนื้อหาตามบรีฟ", "ตัดต่อและกราฟิกคุณภาพสูง", "รวม Logo และ Product Placement", "อัพโหลดลง YouTube พร้อม SEO", "สิทธิ์ใช้งาน 1 ปี"],
             detailsEn: ["Script and content according to brief", "High-quality editing and graphics", "Includes logo and product placement", "Upload to YouTube with SEO", "1 year usage rights"]
@@ -102,8 +113,8 @@ export const talentData = {
 
     // ช่องทางการติดต่อ
     contact: {
-        email: "RanDayo002@gmail.com",
-        emailLink: "mailto:RanDayo002@gmail.com",
+        email: "contact.yuminyui@gmail.com",
+        emailLink: "mailto:contact.yuminyui@gmail.com",
         line: "@poonrighthere",
         lineTh: "(คุณปูน)",
         lineEn: "(Poon)",
@@ -120,109 +131,56 @@ export const talentData = {
 
     // ข้อมูลภาพรวม (Overview Stats - Past 28 Days) แยกตาม Platform
     overview: {
-        youtube: {
-            monthlyViewers: "3.8K",
-            views: "8.6K",
-            viewsChange: "+5.6K",
-            watchTime: "330.8",
-            watchTimeChange: "+170.8",
-            subscribers: "+205",
-            subscribersChange: "+122",
-        },
-        twitch: {
-            views: "9.5K",
-            viewsChange: "+2.1K",
-            watchTime: "2,541",
-            watchTimeChange: "+450",
-            subscribers: "+68",
-            subscribersChange: "+25",
+        tiktok: {
+            monthlyViewers: "72.3K",
+            views: "72.3K",
+            viewsChange: "+72.3K",
+            watchTime: "138",
+            watchTimeChange: "+138",
+            subscribers: "+1K",
+            subscribersChange: "+1K",
+            peakTime: {
+                time: "1:00 PM",
+                topDateTh: "เม.ย. 09",
+                topDateEn: "Apr 09",
+                descriptionTh: "ช่วงเวลาที่ผู้ชมเข้าชม TikTok LIVE มากที่สุดในช่วง 7 วันที่ผ่านมา",
+                descriptionEn: "Time when viewers watched TikTok LIVE the most in the past 7 days"
+            },
+            trafficSources: [
+                { label: "คำแนะนำ LIVE", labelEn: "LIVE Recommendation", value: 71 },
+                { label: "กำลังติดตาม", labelEn: "Following", value: 17 },
+                { label: "อื่น ๆ", labelEn: "Others", value: 11 }
+            ]
         },
     },
 
     // ข้อมูล Demography แยกตาม Platform
     demography: {
-        youtube: [
+        tiktok: [
             {
                 label: "Gender Distribution",
-                data: { male: 94.6, female: 5.4 },
+                data: { male: 73, female: 27 },
                 iconColor: "text-pink-400"
             },
             {
                 label: "Age Range",
-                data: { "18-24": 35.9, "25-34": 60.6, "35-44": 3.4, "45+": 0.1 },
+                data: { "18-24": 24, "25-34": 38, "35-44": 22, "45+": 16 },
                 iconColor: "text-yellow-400"
             },
             {
                 label: "Geographic",
-                data: { "Thailand": 81, "Other": 19 },
-                iconColor: "text-blue-400"
-            },
-            {
-                label: "Content Type (Past 28 Days)",
-                data: { "Video": 83.4, "Shorts": 10.3, "Livestream": 6.3 },
-                iconColor: "text-purple-400"
-            },
-            {
-                label: "New vs Returning Viewers",
-                data: { "Returning": 64.0, "New": 34.6 },
-                iconColor: "text-green-400"
-            },
-            {
-                label: "Viewing Behavior",
-                data: { "New viewers": 79.8, "Casual viewers": 14.1, "Regular viewers": 6.2 },
-                iconColor: "text-cyan-400"
-            },
-            {
-                label: "Subscription Status",
-                data: { "Not subscribed": 70.6, "Subscribed": 29.4 },
-                iconColor: "text-orange-400"
-            },
-            {
-                label: "Device Type",
-                data: { "Mobile phone": 48.9, "Computer": 44.5, "Tablet": 5.9, "TV": 0.7 },
-                iconColor: "text-indigo-400"
-            },
-            {
-                label: "Operating System",
-                data: { "Android": 41.3, "Windows": 40.5, "iOS": 13.9, "Macintosh": 3.7, "Other": 0.5 },
-                iconColor: "text-teal-400"
-            },
-        ],
-        twitch: [
-            {
-                label: "Gender Distribution",
-                data: { male: 92, female: 8 },
-                iconColor: "text-pink-400"
-            },
-            {
-                label: "Age Range",
-                data: { "18-24": 45, "25-34": 50, "35-44": 5 },
-                iconColor: "text-yellow-400"
-            },
-            {
-                label: "Geographic",
-                data: { "Thailand": 75, "Other": 25 },
+                data: { "Thailand": 94, "Other": 6 },
                 iconColor: "text-blue-400"
             },
             {
                 label: "Viewer Statistics",
-                data: { "Peak Viewers": 99, "Average Viewers": 25.3, "Unique Viewers": 5.7 },
+                data: { "Total Views": 72300, "Unique Viewers": 1700, "Comments": 21100 },
                 iconColor: "text-purple-400"
             },
             {
-                label: "Engaged Viewers",
-                data: { "Returning Engaged": 87.4, "New Engaged": 12.6 },
-                iconColor: "text-emerald-400"
-            },
-            {
                 label: "Chat Engagement",
-                data: { "Avg Chatters/Day": 29.7, "Chat Messages/Day": 472.2 },
+                data: { "Comments": 21100, "Diamonds": 219700 },
                 iconColor: "text-yellow-400"
-            },
-            {
-                label: "Subscription Tiers",
-                data: { "Tier 1": 97.0, "Tier 3": 3.0 },
-                iconColor: "text-rose-400"
             },
         ],
     },
@@ -268,5 +226,5 @@ export const talentData = {
     ],
 
     // ข้อมูลอัพเดตล่าสุด
-    lastUpdated: "2026-01-23", // วันที่อัพเดตล่าสุด (รูปแบบ: YYYY-MM-DD)
+    lastUpdated: "2026-04-10", // วันที่อัพเดตล่าสุด (รูปแบบ: YYYY-MM-DD)
 };

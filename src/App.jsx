@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Users, Star, Globe, Video, MousePointer2, Mic, BarChart3, ExternalLink, Film, Share2, Youtube, Twitch, TrendingUp, Eye, Clock, UserPlus, Loader2, Printer, Copy, Check, Facebook, Twitter, ChevronLeft, ChevronRight, Languages, X } from 'lucide-react';
+import { Mail, Users, Star, Globe, Video, MousePointer2, Mic, BarChart3, ExternalLink, Film, Share2, TrendingUp, Eye, Clock, UserPlus, Loader2, Printer, Copy, Check, Facebook, Twitter, ChevronLeft, ChevronRight, Languages, X } from 'lucide-react';
 import { talentData } from './data'; // Import ข้อมูลจากไฟล์ data.js
 
 // Line Logo SVG Component
@@ -18,7 +18,7 @@ const DiscordIcon = ({ className }) => (
 
 const App = () => {
     const [activeTab, setActiveTab] = useState('services');
-    const [demographyPlatform, setDemographyPlatform] = useState('youtube');
+    const demographyPlatform = 'tiktok';
     const [isLoading, setIsLoading] = useState(true);
     const [copied, setCopied] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -27,10 +27,64 @@ const App = () => {
     const [selectedService, setSelectedService] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const carouselIntervalRef = useRef(null);
-    const { profile, socials, stats, services, terms, contact, demography, portfolio, lastUpdated, overview } = talentData;
+    const { profile, seo, socials, stats, services, terms, contact, demography, lastUpdated, overview } = talentData;
 
     // ใช้ images array ถ้ามี หรือใช้ image เดียว
     const images = profile.images && profile.images.length > 0 ? profile.images : [profile.image];
+
+    // Sync document metadata from src/data.js
+    useEffect(() => {
+        const pageTitle = seo?.title || `${profile.name} - VTuber Rate Card`;
+        const pageDescription = seo?.description || `${profile.name} VTuber collaboration profile`;
+        const pageKeywords = seo?.keywords || '';
+        const pageAuthor = seo?.author || profile.name;
+        const pageImage = seo?.image || profile.image;
+        const pageLocale = seo?.locale || 'th_TH';
+        const pageSiteName = seo?.siteName || `${profile.name} Rate Card`;
+        const canonicalUrl = window.location.href;
+
+        document.title = pageTitle;
+
+        const upsertMeta = (selector, attributes) => {
+            let el = document.head.querySelector(selector);
+            if (!el) {
+                el = document.createElement('meta');
+                document.head.appendChild(el);
+            }
+            Object.entries(attributes).forEach(([key, value]) => {
+                el.setAttribute(key, value);
+            });
+        };
+
+        const upsertLink = (selector, attributes) => {
+            let el = document.head.querySelector(selector);
+            if (!el) {
+                el = document.createElement('link');
+                document.head.appendChild(el);
+            }
+            Object.entries(attributes).forEach(([key, value]) => {
+                el.setAttribute(key, value);
+            });
+        };
+
+        upsertMeta('meta[name="title"]', { name: 'title', content: pageTitle });
+        upsertMeta('meta[name="description"]', { name: 'description', content: pageDescription });
+        upsertMeta('meta[name="keywords"]', { name: 'keywords', content: pageKeywords });
+        upsertMeta('meta[name="author"]', { name: 'author', content: pageAuthor });
+        upsertMeta('meta[property="og:type"]', { property: 'og:type', content: 'website' });
+        upsertMeta('meta[property="og:url"]', { property: 'og:url', content: canonicalUrl });
+        upsertMeta('meta[property="og:title"]', { property: 'og:title', content: pageTitle });
+        upsertMeta('meta[property="og:description"]', { property: 'og:description', content: pageDescription });
+        upsertMeta('meta[property="og:image"]', { property: 'og:image', content: new URL(pageImage, window.location.origin).toString() });
+        upsertMeta('meta[property="og:locale"]', { property: 'og:locale', content: pageLocale });
+        upsertMeta('meta[property="og:site_name"]', { property: 'og:site_name', content: pageSiteName });
+        upsertMeta('meta[property="twitter:card"]', { property: 'twitter:card', content: 'summary_large_image' });
+        upsertMeta('meta[property="twitter:url"]', { property: 'twitter:url', content: canonicalUrl });
+        upsertMeta('meta[property="twitter:title"]', { property: 'twitter:title', content: pageTitle });
+        upsertMeta('meta[property="twitter:description"]', { property: 'twitter:description', content: pageDescription });
+        upsertMeta('meta[property="twitter:image"]', { property: 'twitter:image', content: new URL(pageImage, window.location.origin).toString() });
+        upsertLink('link[rel="canonical"]', { rel: 'canonical', href: canonicalUrl });
+    }, [profile.image, profile.name, seo]);
 
     // Loading state
     useEffect(() => {
@@ -172,12 +226,12 @@ const App = () => {
                 {entries.map(([key, value], idx) => (
                     <div key={idx}>
                         <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm text-gray-300">{key}</span>
-                            <span className="text-sm font-bold text-white">
+                            <span className="text-sm text-slate-700">{key}</span>
+                            <span className="text-sm font-bold text-slate-800">
                                 {isPercentage ? `${value}%` : typeof value === 'number' ? value.toFixed(1) : value}
                             </span>
                         </div>
-                        <div className="w-full bg-gray-700/50 rounded-full h-3 overflow-hidden">
+                        <div className="w-full bg-pink-50 rounded-full h-3 overflow-hidden">
                             <div
                                 className="bg-gradient-to-r from-pink-500 to-purple-500 h-full rounded-full transition-all duration-500"
                                 style={{ width: `${(value / maxValue) * 100}%` }}
@@ -192,29 +246,29 @@ const App = () => {
     // Loading screen
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center" role="status" aria-label="Loading">
+            <div className="min-h-screen bg-gradient-to-br from-rose-100 via-pink-100 to-sky-100 text-slate-800 flex items-center justify-center" role="status" aria-label="Loading">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 text-pink-400 animate-spin mx-auto mb-4" />
-                    <p className="text-gray-400">กำลังโหลด...</p>
+                    <p className="text-slate-600">กำลังโหลด...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white font-sans p-1 sm:p-2 md:p-4 lg:p-8 flex items-center justify-center" role="main" aria-label="VTuber Rate Card">
+        <div className="min-h-screen bg-gradient-to-br from-rose-100 via-pink-100 to-sky-100 text-slate-800 font-sans p-1 sm:p-2 md:p-4 lg:p-8 flex items-center justify-center" role="main" aria-label="VTuber Rate Card">
             {/* Language Toggle Button */}
             <div className="fixed top-2 left-2 sm:top-4 sm:left-4 z-50 print:hidden">
                 <div className="relative group">
                     <button
                         onClick={() => setLanguage(language === 'th' ? 'en' : 'th')}
                         aria-label={`Switch to ${language === 'th' ? 'English' : 'Thai'}`}
-                        className="bg-gray-800 hover:bg-gray-700 p-2 sm:p-3 rounded-lg border border-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 active:bg-gray-600 touch-manipulation flex items-center gap-2 shadow-lg"
+                        className="bg-rose-50/90 hover:bg-pink-50 p-2 sm:p-3 rounded-lg border border-pink-100 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 active:bg-pink-100 touch-manipulation flex items-center gap-2 shadow-lg"
                     >
                         <Languages className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span className="text-xs sm:text-sm font-bold">{language === 'th' ? 'TH' : 'EN'}</span>
                     </button>
-                    <div className="absolute top-full left-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap px-3 py-2 text-xs">
+                    <div className="absolute top-full left-0 mt-2 bg-rose-50 border border-pink-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap px-3 py-2 text-xs">
                         {language === 'th' ? 'Switch to English' : 'เปลี่ยนเป็นภาษาไทย'}
                     </div>
                 </div>
@@ -226,7 +280,7 @@ const App = () => {
                     <button
                         onClick={handleCopyLink}
                         aria-label="Copy link"
-                        className="bg-gray-800 hover:bg-gray-700 active:bg-gray-600 p-2 sm:p-3 rounded-lg border border-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 touch-manipulation"
+                        className="bg-rose-50/90 hover:bg-pink-50 active:bg-pink-100 p-2 sm:p-3 rounded-lg border border-pink-100 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 touch-manipulation"
                     >
                         {copied ? (
                             <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
@@ -235,7 +289,7 @@ const App = () => {
                         )}
                     </button>
                     {copied && (
-                        <span className="absolute -top-10 sm:-top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                        <span className="absolute -top-10 sm:-top-8 left-1/2 transform -translate-x-1/2 bg-rose-50 text-slate-700 text-xs px-2 py-1 rounded whitespace-nowrap z-10">
                             คัดลอกแล้ว!
                         </span>
                     )}
@@ -244,22 +298,22 @@ const App = () => {
                     <button
                         onClick={handleShare}
                         aria-label="Share"
-                        className="bg-gray-800 hover:bg-gray-700 active:bg-gray-600 p-2 sm:p-3 rounded-lg border border-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 touch-manipulation"
+                        className="bg-rose-50/90 hover:bg-pink-50 active:bg-pink-100 p-2 sm:p-3 rounded-lg border border-pink-100 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 touch-manipulation"
                     >
                         <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
-                    <div className="absolute top-full right-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 sm:block hidden">
+                    <div className="absolute top-full right-0 mt-2 bg-rose-50 border border-pink-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 sm:block hidden">
                         <div className="py-1">
                             <button
                                 onClick={handleShareFacebook}
-                                className="w-full px-4 py-2 text-left hover:bg-gray-700 active:bg-gray-600 flex items-center gap-2 text-sm"
+                                className="w-full px-4 py-2 text-left hover:bg-pink-50 active:bg-pink-100 flex items-center gap-2 text-sm"
                             >
                                 <Facebook className="w-4 h-4 text-blue-500" />
                                 แชร์บน Facebook
                             </button>
                             <button
                                 onClick={handleShareTwitter}
-                                className="w-full px-4 py-2 text-left hover:bg-gray-700 active:bg-gray-600 flex items-center gap-2 text-sm"
+                                className="w-full px-4 py-2 text-left hover:bg-pink-50 active:bg-pink-100 flex items-center gap-2 text-sm"
                             >
                                 <Twitter className="w-4 h-4 text-blue-400" />
                                 แชร์บน Twitter
@@ -270,13 +324,13 @@ const App = () => {
                 <button
                     onClick={handlePrint}
                     aria-label="Print"
-                    className="bg-gray-800 hover:bg-gray-700 active:bg-gray-600 p-2 sm:p-3 rounded-lg border border-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 touch-manipulation"
+                    className="bg-rose-50/90 hover:bg-pink-50 active:bg-pink-100 p-2 sm:p-3 rounded-lg border border-pink-100 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 touch-manipulation"
                 >
                     <Printer className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
             </div>
 
-            <div className="max-w-5xl w-full bg-gray-800 rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-gray-700 relative" role="article" aria-label="Professional Rate Card">
+            <div className="max-w-5xl w-full bg-rose-50/95 rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-pink-100 relative" role="article" aria-label="Professional Rate Card">
 
                 {/* Left Section: Dynamic Profile */}
                 <aside className={`w-full md:w-[35%] bg-gradient-to-b ${profile.bgColor} p-4 sm:p-6 md:p-8 flex flex-col items-center justify-between relative overflow-hidden`} aria-label="Profile Information">
@@ -286,8 +340,8 @@ const App = () => {
                     </div>
 
                     <div className="z-10 text-center w-full">
-                        <div className="relative mx-auto w-full max-w-[200px] sm:max-w-[250px] md:max-w-none aspect-[3/4] bg-gray-900/50 rounded-xl border border-white/10 mb-4 sm:mb-6 flex items-center justify-center overflow-hidden group" role="img" aria-label={`${profile.name} VTuber Model`}>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" aria-hidden="true"></div>
+                        <div className="relative mx-auto w-full max-w-[200px] sm:max-w-[250px] md:max-w-none aspect-[3/4] bg-pink-50/80 rounded-xl border border-pink-200/60 mb-4 sm:mb-6 flex items-center justify-center overflow-hidden group" role="img" aria-label={`${profile.name} VTuber Model`}>
+                            <div className="absolute inset-0 bg-gradient-to-t from-pink-100/60 to-transparent z-10" aria-hidden="true"></div>
 
                             {/* Image Carousel */}
                             <div className="relative w-full h-full overflow-hidden">
@@ -312,14 +366,14 @@ const App = () => {
                                     <button
                                         onClick={goToPrevious}
                                         aria-label="Previous image"
-                                        className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-pink-400 active:bg-black/90 touch-manipulation"
+                                        className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-pink-50/90 hover:bg-pink-100 text-pink-500 p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-pink-400 active:bg-pink-200 touch-manipulation"
                                     >
                                         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                                     </button>
                                     <button
                                         onClick={goToNext}
                                         aria-label="Next image"
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-pink-400 active:bg-black/90 touch-manipulation"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-pink-50/90 hover:bg-pink-100 text-pink-500 p-2 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-pink-400 active:bg-pink-200 touch-manipulation"
                                     >
                                         <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                                     </button>
@@ -333,7 +387,7 @@ const App = () => {
                                                 aria-label={`Go to image ${idx + 1}`}
                                                 className={`w-2 h-2 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-transparent ${idx === currentImageIndex
                                                     ? 'bg-pink-400 w-6'
-                                                    : 'bg-white/50 hover:bg-white/70'
+                                                    : 'bg-pink-200 hover:bg-pink-300'
                                                     }`}
                                             />
                                         ))}
@@ -341,7 +395,7 @@ const App = () => {
 
                                     {/* Auto-play Indicator */}
                                     {isAutoPlay && (
-                                        <div className="absolute top-3 right-3 z-20 bg-black/50 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <div className="absolute top-3 right-3 z-20 bg-pink-50/90 text-pink-500 text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                             Auto
                                         </div>
                                     )}
@@ -349,7 +403,7 @@ const App = () => {
                             )}
                         </div>
 
-                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-0.5 sm:mb-1">{profile.name}</h1>
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800 mb-0.5 sm:mb-1">{profile.name}</h1>
                         <p className={`${profile.themeColor} font-medium tracking-wider text-[10px] sm:text-xs md:text-sm mb-3 sm:mb-4 md:mb-6`} role="text" aria-label="Role">
                             {language === 'th' ? profile.role : (profile.roleEn || profile.role)}
                         </p>
@@ -379,28 +433,28 @@ const App = () => {
                                         href={social.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="group flex items-center bg-black/20 p-2 sm:p-2.5 rounded-lg backdrop-blur-sm hover:bg-black/40 hover:scale-[1.02] hover:shadow-lg hover:shadow-pink-500/20 border border-transparent hover:border-pink-500/30 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-transparent active:bg-black/50 active:scale-[0.98] touch-manipulation"
+                                        className="group flex items-center bg-sky-50/80 p-2 sm:p-2.5 rounded-lg backdrop-blur-sm hover:bg-pink-100 hover:scale-[1.02] hover:shadow-lg hover:shadow-pink-500/20 border border-transparent hover:border-pink-200 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-transparent active:bg-pink-100 active:scale-[0.98] touch-manipulation"
                                         role="listitem"
                                         aria-label={`Visit ${social.platform} profile`}
                                     >
                                         <social.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${social.color} mr-2 sm:mr-3 flex-shrink-0 group-hover:scale-110 transition-transform duration-200`} aria-hidden="true" />
                                         <div className="text-left flex-1 min-w-0">
-                                            <p className="text-xs text-gray-400 group-hover:text-gray-300 truncate transition-colors" aria-label={`${social.platform} platform`}>{social.platform}</p>
-                                            <p className="font-bold text-sm sm:text-base group-hover:text-white truncate transition-colors flex items-center gap-1.5" aria-label={`${social.platform} count: ${social.count}`}>
+                                            <p className="text-xs text-slate-600 group-hover:text-slate-700 truncate transition-colors" aria-label={`${social.platform} platform`}>{social.platform}</p>
+                                            <p className="font-bold text-sm sm:text-base group-hover:text-pink-600 truncate transition-colors flex items-center gap-1.5" aria-label={`${social.platform} count: ${social.count}`}>
                                                 <span>{formattedCount}</span>
                                                 {num >= 1000 && (
-                                                    <span className="text-[10px] font-normal text-gray-500/70">
+                                                    <span className="text-[10px] font-normal text-slate-600/90">
                                                         {language === 'th' ? 'ผู้ติดตาม' : 'followers'}
                                                     </span>
                                                 )}
                                                 {num < 1000 && (
-                                                    <span className="text-[10px] font-normal text-gray-500/70 italic">
+                                                    <span className="text-[10px] font-normal text-slate-600/90 italic">
                                                         {language === 'th' ? 'ชุมชน' : 'community'}
                                                     </span>
                                                 )}
                                             </p>
                                         </div>
-                                        <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500 group-hover:text-pink-400 opacity-0 group-hover:opacity-100 transition-all duration-200 ml-2 flex-shrink-0" aria-hidden="true" />
+                                        <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-slate-400 group-hover:text-pink-500 opacity-0 group-hover:opacity-100 transition-all duration-200 ml-2 flex-shrink-0" aria-hidden="true" />
                                     </a>
                                 );
                             })}
@@ -409,7 +463,7 @@ const App = () => {
                         {/* Contact Section */}
                         <div className="mt-4 sm:mt-5 w-full">
                             <div className="flex flex-col gap-2">
-                                <span className="text-xs sm:text-sm text-gray-400 text-center" aria-label="Contact information">
+                                <span className="text-xs sm:text-sm text-slate-600 text-center" aria-label="Contact information">
                                     {language === 'th' ? 'สนใจร่วมงาน ติดต่อได้ที่ :' : 'Interested in collaboration? Contact us:'}
                                 </span>
                                 <div className="flex flex-col gap-2">
@@ -417,10 +471,10 @@ const App = () => {
                                     <a
                                         href={contact.emailLink}
                                         aria-label={`Contact via email: ${contact.email}`}
-                                        className="inline-flex items-center justify-center gap-2 sm:gap-3 bg-white text-gray-900 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 min-h-[44px] rounded-full text-xs sm:text-sm md:text-base font-bold hover:bg-pink-400 hover:text-white transition-all shadow-lg shadow-pink-500/20 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-transparent active:bg-pink-500 active:text-white touch-manipulation w-full"
+                                        className="inline-flex items-center justify-center gap-2 sm:gap-3 bg-pink-500 text-white px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 min-h-[44px] rounded-full text-xs sm:text-sm md:text-base font-bold hover:bg-pink-600 hover:text-white transition-all shadow-lg shadow-pink-500/20 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-transparent active:bg-pink-500 active:text-white touch-manipulation w-full"
                                     >
                                         <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0" aria-hidden="true" />
-                                        <span className="break-all text-center text-[11px] sm:text-xs md:text-sm lg:text-base">{contact.email}</span>
+                                        <span className="text-center text-[10px] sm:text-[11px] md:text-xs lg:text-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-full">{contact.email}</span>
                                     </a>
 
                                     {/* Line */}
@@ -467,14 +521,14 @@ const App = () => {
                 </aside>
 
                 {/* Right Section */}
-                <section className="w-full md:w-[65%] p-4 sm:p-6 md:p-8 bg-gray-800 flex flex-col" aria-label="Rate Card Content">
+                <section className="w-full md:w-[65%] p-4 sm:p-6 md:p-8 bg-pink-50/90 flex flex-col" aria-label="Rate Card Content">
                     {/* Stats */}
                     <section className="grid grid-cols-3 gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 mb-3 sm:mb-4 md:mb-6 lg:mb-8" aria-label="Statistics Overview" role="region">
                         {stats.map((stat, idx) => (
-                            <div key={idx} className="bg-gray-700/50 p-1.5 sm:p-2 md:p-3 lg:p-4 rounded-md sm:rounded-lg md:rounded-xl border border-gray-600 text-center" role="article" aria-label={`${stat.labelEn || stat.label}: ${stat.value}`}>
+                            <div key={idx} className="bg-pink-50 p-1.5 sm:p-2 md:p-3 lg:p-4 rounded-md sm:rounded-lg md:rounded-xl border border-pink-200 text-center" role="article" aria-label={`${stat.labelEn || stat.label}: ${stat.value}`}>
                                 <div aria-hidden="true" className="mb-0.5 sm:mb-1 md:mb-2">{getStatIcon(idx)}</div>
                                 <h3 className="text-sm sm:text-base md:text-lg lg:text-2xl font-bold break-words leading-tight" aria-label={`${stat.labelEn || stat.label} value`}>{stat.value}</h3>
-                                <p className={`text-[9px] sm:text-[10px] md:text-xs text-gray-400 mt-0.5 sm:mt-1 break-words leading-tight ${language === 'th' ? 'min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] flex items-center justify-center' : ''}`} aria-label={`${stat.labelEn || stat.label} label`}>
+                                <p className={`text-[9px] sm:text-[10px] md:text-xs text-slate-600 mt-0.5 sm:mt-1 break-words leading-tight ${language === 'th' ? 'min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] flex items-center justify-center' : ''}`} aria-label={`${stat.labelEn || stat.label} label`}>
                                     {language === 'th' ? stat.label : (stat.labelEn || stat.label)}
                                 </p>
                             </div>
@@ -482,19 +536,19 @@ const App = () => {
                     </section>
 
                     {/* Tabs */}
-                    <nav className="grid grid-cols-4 gap-0.5 sm:gap-1 md:gap-2 border-b border-gray-700 mb-3 sm:mb-4 md:mb-6" role="tablist" aria-label="Content Navigation">
+                    <nav className="grid grid-cols-3 gap-0.5 sm:gap-1 md:gap-2 border-b border-pink-100 mb-3 sm:mb-4 md:mb-6" role="tablist" aria-label="Content Navigation">
                         <button
                             onClick={() => setActiveTab('services')}
                             role="tab"
                             aria-selected={activeTab === 'services'}
                             aria-controls="services-panel"
                             id="services-tab"
-                            className={`pb-1.5 sm:pb-2 md:pb-3 px-0.5 sm:px-1 md:px-2 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded-t active:bg-gray-700/30 text-center min-h-[44px] sm:min-h-[48px] flex flex-col items-center justify-center ${activeTab === 'services' ? `${profile.themeColor} border-b-2 border-pink-400` : 'text-gray-500 hover:text-white'}`}
+                            className={`pb-1.5 sm:pb-2 md:pb-3 px-0.5 sm:px-1 md:px-2 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-white rounded-t active:bg-pink-100 text-center min-h-[44px] sm:min-h-[48px] flex flex-col items-center justify-center ${activeTab === 'services' ? `${profile.themeColor} border-b-2 border-pink-400` : 'text-slate-600 hover:text-pink-500'}`}
                         >
                             <span className={`block leading-tight ${language === 'th' ? 'text-[9px] sm:text-[10px] md:text-xs font-bold' : 'text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider'}`}>
                                 {language === 'th' ? 'บริการและราคา' : 'Services & Rates'}
                             </span>
-                            <span className={`block mt-0.5 leading-tight ${language === 'th' ? 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400' : 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400'}`}>
+                            <span className={`block mt-0.5 leading-tight ${language === 'th' ? 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-slate-600' : 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-slate-600'}`}>
                                 {language === 'th' ? 'Services & Rates' : 'บริการและราคา'}
                             </span>
                         </button>
@@ -504,28 +558,13 @@ const App = () => {
                             aria-selected={activeTab === 'demography'}
                             aria-controls="demography-panel"
                             id="demography-tab"
-                            className={`pb-1.5 sm:pb-2 md:pb-3 px-0.5 sm:px-1 md:px-2 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded-t active:bg-gray-700/30 text-center min-h-[44px] sm:min-h-[48px] flex flex-col items-center justify-center ${activeTab === 'demography' ? `${profile.themeColor} border-b-2 border-pink-400` : 'text-gray-500 hover:text-white'}`}
+                            className={`pb-1.5 sm:pb-2 md:pb-3 px-0.5 sm:px-1 md:px-2 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-white rounded-t active:bg-pink-100 text-center min-h-[44px] sm:min-h-[48px] flex flex-col items-center justify-center ${activeTab === 'demography' ? `${profile.themeColor} border-b-2 border-pink-400` : 'text-slate-600 hover:text-pink-500'}`}
                         >
                             <span className={`block leading-tight ${language === 'th' ? 'text-[9px] sm:text-[10px] md:text-xs font-bold' : 'text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider'}`}>
                                 {language === 'th' ? 'ข้อมูลผู้ชม' : 'Demography'}
                             </span>
-                            <span className={`block mt-0.5 leading-tight ${language === 'th' ? 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400' : 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400'}`}>
+                            <span className={`block mt-0.5 leading-tight ${language === 'th' ? 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-slate-600' : 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-slate-600'}`}>
                                 {language === 'th' ? 'Demography' : 'ข้อมูลผู้ชม'}
-                            </span>
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('portfolio')}
-                            role="tab"
-                            aria-selected={activeTab === 'portfolio'}
-                            aria-controls="portfolio-panel"
-                            id="portfolio-tab"
-                            className={`pb-1.5 sm:pb-2 md:pb-3 px-0.5 sm:px-1 md:px-2 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded-t active:bg-gray-700/30 text-center min-h-[44px] sm:min-h-[48px] flex flex-col items-center justify-center ${activeTab === 'portfolio' ? `${profile.themeColor} border-b-2 border-pink-400` : 'text-gray-500 hover:text-white'}`}
-                        >
-                            <span className={`block leading-tight ${language === 'th' ? 'text-[9px] sm:text-[10px] md:text-xs font-bold' : 'text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider'}`}>
-                                {language === 'th' ? 'ผลงาน' : 'Portfolio'}
-                            </span>
-                            <span className={`block mt-0.5 leading-tight ${language === 'th' ? 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400' : 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400'}`}>
-                                {language === 'th' ? 'Portfolio' : 'ผลงาน'}
                             </span>
                         </button>
                         <button
@@ -534,12 +573,12 @@ const App = () => {
                             aria-selected={activeTab === 'terms'}
                             aria-controls="terms-panel"
                             id="terms-tab"
-                            className={`pb-1.5 sm:pb-2 md:pb-3 px-0.5 sm:px-1 md:px-2 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800 rounded-t active:bg-gray-700/30 text-center min-h-[44px] sm:min-h-[48px] flex flex-col items-center justify-center ${activeTab === 'terms' ? `${profile.themeColor} border-b-2 border-pink-400` : 'text-gray-500 hover:text-white'}`}
+                            className={`pb-1.5 sm:pb-2 md:pb-3 px-0.5 sm:px-1 md:px-2 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-white rounded-t active:bg-pink-100 text-center min-h-[44px] sm:min-h-[48px] flex flex-col items-center justify-center ${activeTab === 'terms' ? `${profile.themeColor} border-b-2 border-pink-400` : 'text-slate-600 hover:text-pink-500'}`}
                         >
                             <span className={`block leading-tight ${language === 'th' ? 'text-[9px] sm:text-[10px] md:text-xs font-bold' : 'text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider'}`}>
                                 {language === 'th' ? 'เงื่อนไข' : 'Terms & Conditions'}
                             </span>
-                            <span className={`block mt-0.5 leading-tight ${language === 'th' ? 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400' : 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-gray-400'}`}>
+                            <span className={`block mt-0.5 leading-tight ${language === 'th' ? 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-slate-600' : 'text-[7px] sm:text-[8px] md:text-[9px] font-normal normal-case italic text-slate-600'}`}>
                                 {language === 'th' ? 'Terms & Conditions' : 'เงื่อนไข'}
                             </span>
                         </button>
@@ -553,7 +592,7 @@ const App = () => {
                                     <article
                                         key={idx}
                                         onClick={() => openServiceModal(service)}
-                                        className="bg-gray-700/30 p-2.5 sm:p-3 md:p-4 lg:p-5 rounded-md sm:rounded-lg md:rounded-xl border border-gray-700 hover:border-pink-500/50 transition-all cursor-pointer hover:bg-gray-700/40 hover:shadow-lg hover:shadow-pink-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between group gap-2 sm:gap-3 md:gap-4 min-h-[80px] sm:min-h-[100px]"
+                                        className="bg-pink-50/80 p-2.5 sm:p-3 md:p-4 lg:p-5 rounded-md sm:rounded-lg md:rounded-xl border border-pink-100 hover:border-pink-500/50 transition-all cursor-pointer hover:bg-pink-50 hover:shadow-lg hover:shadow-pink-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between group gap-2 sm:gap-3 md:gap-4 min-h-[80px] sm:min-h-[100px]"
                                         role="button"
                                         tabIndex={0}
                                         aria-label={`Service: ${service.title} - Click to view details`}
@@ -565,20 +604,20 @@ const App = () => {
                                         }}
                                     >
                                         <div className="flex items-start gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0">
-                                            <div className="p-1.5 sm:p-2 md:p-3 bg-white/5 rounded-md sm:rounded-lg text-white group-hover:bg-pink-500 transition-colors flex-shrink-0" aria-hidden="true">
+                                            <div className="p-1.5 sm:p-2 md:p-3 bg-pink-100/60 rounded-md sm:rounded-lg text-pink-500 group-hover:bg-pink-500 transition-colors flex-shrink-0" aria-hidden="true">
                                                 {getServiceIcon(service.title)}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <h4 className="font-bold text-sm sm:text-base md:text-lg mb-0.5 sm:mb-1 break-words leading-tight">{service.title}</h4>
-                                                <p className={`text-[11px] sm:text-xs md:text-sm text-gray-400 mb-1.5 sm:mb-2 break-words leading-relaxed ${language === 'th' ? 'min-h-[2rem] sm:min-h-[2.5rem]' : ''}`}>
+                                                <p className={`text-[11px] sm:text-xs md:text-sm text-slate-600 mb-1.5 sm:mb-2 break-words leading-relaxed ${language === 'th' ? 'min-h-[2rem] sm:min-h-[2.5rem]' : ''}`}>
                                                     {language === 'th' ? service.description : (service.descriptionEn || service.description)}
                                                     {language === 'th' && service.descriptionEn && (
-                                                        <span className="block text-[9px] sm:text-[10px] text-gray-500/80 mt-0.5 italic leading-tight">
+                                                        <span className="block text-[9px] sm:text-[10px] text-slate-600/90 mt-0.5 italic leading-tight">
                                                             {service.descriptionEn}
                                                         </span>
                                                     )}
                                                     {language === 'en' && service.description && (
-                                                        <span className="block text-[9px] sm:text-[10px] text-gray-500/80 mt-0.5 italic leading-tight">
+                                                        <span className="block text-[9px] sm:text-[10px] text-slate-600/90 mt-0.5 italic leading-tight">
                                                             {service.description}
                                                         </span>
                                                     )}
@@ -592,82 +631,52 @@ const App = () => {
                                             </div>
                                         </div>
                                         <div className="text-left sm:text-right w-full sm:w-auto sm:min-w-[90px] md:min-w-[100px] flex-shrink-0">
-                                            <span className="block text-base sm:text-lg md:text-xl font-bold text-white whitespace-nowrap" aria-label={`Price: ${service.price}`}>{service.price}</span>
-                                            <span className="text-[10px] sm:text-xs text-gray-500" aria-label={`Unit: ${service.unit}`}>{service.unit}</span>
+                                            <span className="block text-base sm:text-lg md:text-xl font-bold text-pink-700 whitespace-nowrap" aria-label={`Price: ${service.price}`}>{service.price}</span>
+                                            <span className="text-[10px] sm:text-xs text-slate-600" aria-label={`Unit: ${service.unit}`}>{service.unit}</span>
                                         </div>
                                     </article>
                                 ))}
                             </section>
                         ) : activeTab === 'demography' ? (
                             <section className="space-y-4 sm:space-y-6" aria-label="Demography Data">
-                                {/* Platform Selector */}
-                                <div className="flex gap-1.5 sm:gap-2 md:gap-4 border-b border-gray-700 pb-2 sm:pb-3 md:pb-4" role="group" aria-label="Platform Selection">
-                                    <button
-                                        onClick={() => setDemographyPlatform('youtube')}
-                                        role="radio"
-                                        aria-checked={demographyPlatform === 'youtube'}
-                                        aria-label="Select YouTube platform"
-                                        className={`flex items-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 min-h-[44px] rounded-md sm:rounded-lg text-xs sm:text-sm md:text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-800 active:bg-red-500/30 ${demographyPlatform === 'youtube'
-                                            ? 'bg-red-500/20 text-red-400 border-2 border-red-500'
-                                            : 'bg-gray-700/30 text-gray-400 hover:text-white border-2 border-transparent'
-                                            }`}
-                                    >
-                                        <Youtube className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" aria-hidden="true" />
-                                        <span className="whitespace-nowrap">YouTube</span>
-                                    </button>
-                                    <button
-                                        onClick={() => setDemographyPlatform('twitch')}
-                                        role="radio"
-                                        aria-checked={demographyPlatform === 'twitch'}
-                                        aria-label="Select Twitch platform"
-                                        className={`flex items-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 min-h-[44px] rounded-md sm:rounded-lg text-xs sm:text-sm md:text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800 active:bg-purple-500/30 ${demographyPlatform === 'twitch'
-                                            ? 'bg-purple-500/20 text-purple-400 border-2 border-purple-500'
-                                            : 'bg-gray-700/30 text-gray-400 hover:text-white border-2 border-transparent'
-                                            }`}
-                                    >
-                                        <Twitch className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" aria-hidden="true" />
-                                        <span className="whitespace-nowrap">Twitch</span>
-                                    </button>
-                                </div>
-
                                 {/* Overview Stats - แสดงตาม Platform ที่เลือก */}
                                 {overview && overview[demographyPlatform] && (
-                                    <section className="bg-gradient-to-br from-gray-700/50 to-gray-800/50 p-3 sm:p-4 md:p-5 lg:p-6 rounded-md sm:rounded-lg md:rounded-xl border border-gray-600" aria-label={`Overview Statistics for ${demographyPlatform === 'youtube' ? 'YouTube' : 'Twitch'}`}>
+                                    <section className="bg-gradient-to-br from-pink-50 to-sky-50 p-3 sm:p-4 md:p-5 lg:p-6 rounded-md sm:rounded-lg md:rounded-xl border border-pink-200" aria-label="Overview Statistics for TikTok">
                                         <h3 className="font-bold text-sm sm:text-base md:text-lg lg:text-xl mb-2 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2">
-                                            <BarChart3 className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${demographyPlatform === 'youtube' ? 'text-red-400' : 'text-purple-400'}`} aria-hidden="true" />
+                                            <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-cyan-400" aria-hidden="true" />
                                             <span className="break-words">
-                                                {language === 'th' ? `ภาพรวม 28 วันที่ผ่านมา - ${demographyPlatform === 'youtube' ? 'YouTube' : 'Twitch'}` : `28-Day Overview - ${demographyPlatform === 'youtube' ? 'YouTube' : 'Twitch'}`}
+                                                {language === 'th' ? 'ภาพรวม TikTok (9 ก.พ. 2026 - 9 เม.ย. 2026)' : 'TikTok Overview (Feb 9, 2026 - Apr 9, 2026)'}
                                             </span>
                                         </h3>
                                         <div className={`grid grid-cols-1 ${overview[demographyPlatform].monthlyViewers ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-2 md:grid-cols-3'} gap-2 sm:gap-3 md:gap-4`}>
                                             {overview[demographyPlatform].monthlyViewers && (
-                                                <div className="bg-gray-800/50 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-gray-700">
+                                                <div className="bg-rose-50/90 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-pink-100">
                                                     <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                                                        <Users className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${demographyPlatform === 'youtube' ? 'text-pink-500' : 'text-purple-500'}`} />
-                                                        <span className="text-[10px] sm:text-xs md:text-sm text-gray-400">
+                                                        <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-cyan-400" />
+                                                        <span className="text-[10px] sm:text-xs md:text-sm text-slate-600">
                                                             {language === 'th' ? 'ผู้ชมรายเดือน' : 'Monthly Viewers'}
                                                         </span>
                                                     </div>
-                                                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].monthlyViewers}</div>
-                                                    <div className="text-[10px] sm:text-xs text-gray-500 mt-1 sm:mt-2">
+                                                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].monthlyViewers}</div>
+                                                    <div className="text-[10px] sm:text-xs text-slate-600 mt-1 sm:mt-2">
                                                         {language === 'th' ? 'จำนวนผู้ชมทั้งหมดโดยประมาณ' : '(Approx.)'}
                                                     </div>
                                                     {language === 'th' && (
-                                                        <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">Monthly Viewers (Approx.)</div>
+                                                        <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">Monthly Viewers (Approx.)</div>
                                                     )}
                                                     {language === 'en' && (
-                                                        <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">จำนวนผู้ชมทั้งหมดโดยประมาณ</div>
+                                                        <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">จำนวนผู้ชมทั้งหมดโดยประมาณ</div>
                                                     )}
                                                 </div>
                                             )}
-                                            <div className="bg-gray-800/50 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-gray-700">
+                                            <div className="bg-rose-50/90 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-pink-100">
                                                 <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                                                    <Eye className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${demographyPlatform === 'youtube' ? 'text-red-500' : 'text-purple-500'}`} />
-                                                    <span className="text-[10px] sm:text-xs md:text-sm text-gray-400">
+                                                    <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-cyan-400" />
+                                                    <span className="text-[10px] sm:text-xs md:text-sm text-slate-600">
                                                         {language === 'th' ? 'จำนวนการดู' : 'Views'}
                                                     </span>
                                                 </div>
-                                                <div className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].views}</div>
+                                                <div className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].views}</div>
                                                 <div className="flex items-center gap-1 text-green-400 text-[10px] sm:text-xs md:text-sm">
                                                     <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                                                     <span className="break-words">
@@ -675,20 +684,20 @@ const App = () => {
                                                     </span>
                                                 </div>
                                                 {language === 'th' && (
-                                                    <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">Views (Above average {overview[demographyPlatform].viewsChange})</div>
+                                                    <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">Views (Above average {overview[demographyPlatform].viewsChange})</div>
                                                 )}
                                                 {language === 'en' && (
-                                                    <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">มากกว่าปกติ {overview[demographyPlatform].viewsChange}</div>
+                                                    <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">มากกว่าปกติ {overview[demographyPlatform].viewsChange}</div>
                                                 )}
                                             </div>
-                                            <div className="bg-gray-800/50 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-gray-700">
+                                            <div className="bg-rose-50/90 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-pink-100">
                                                 <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                                                    <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${demographyPlatform === 'youtube' ? 'text-blue-500' : 'text-purple-500'}`} />
-                                                    <span className="text-[10px] sm:text-xs md:text-sm text-gray-400 break-words">
+                                                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-cyan-400" />
+                                                    <span className="text-[10px] sm:text-xs md:text-sm text-slate-600 break-words">
                                                         {language === 'th' ? 'เวลาในการรับชม (ชั่วโมง)' : 'Watch Time (hours)'}
                                                     </span>
                                                 </div>
-                                                <div className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].watchTime}</div>
+                                                <div className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].watchTime}</div>
                                                 <div className="flex items-center gap-1 text-green-400 text-[10px] sm:text-xs md:text-sm">
                                                     <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                                                     <span className="break-words">
@@ -696,20 +705,20 @@ const App = () => {
                                                     </span>
                                                 </div>
                                                 {language === 'th' && (
-                                                    <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">Watch Time (hours) (Above average {overview[demographyPlatform].watchTimeChange})</div>
+                                                    <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">Watch Time (hours) (Above average {overview[demographyPlatform].watchTimeChange})</div>
                                                 )}
                                                 {language === 'en' && (
-                                                    <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">เวลาในการรับชม (ชั่วโมง) (มากกว่าปกติ {overview[demographyPlatform].watchTimeChange})</div>
+                                                    <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">เวลาในการรับชม (ชั่วโมง) (มากกว่าปกติ {overview[demographyPlatform].watchTimeChange})</div>
                                                 )}
                                             </div>
-                                            <div className="bg-gray-800/50 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-gray-700">
+                                            <div className="bg-rose-50/90 p-2 sm:p-3 md:p-4 rounded-md sm:rounded-lg border border-pink-100">
                                                 <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                                                    <UserPlus className={`w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 ${demographyPlatform === 'youtube' ? 'text-green-500' : 'text-purple-500'}`} />
-                                                    <span className="text-[10px] sm:text-xs md:text-sm text-gray-400">
+                                                    <UserPlus className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-cyan-400" />
+                                                    <span className="text-[10px] sm:text-xs md:text-sm text-slate-600">
                                                         {language === 'th' ? 'ผู้ติดตาม' : 'Subscribers'}
                                                     </span>
                                                 </div>
-                                                <div className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].subscribers}</div>
+                                                <div className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 mb-0.5 sm:mb-1 break-words">{overview[demographyPlatform].subscribers}</div>
                                                 <div className="flex items-center gap-1 text-green-400 text-[10px] sm:text-xs md:text-sm">
                                                     <TrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />
                                                     <span className="break-words">
@@ -717,22 +726,75 @@ const App = () => {
                                                     </span>
                                                 </div>
                                                 {language === 'th' && (
-                                                    <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">Subscribers (Above average {overview[demographyPlatform].subscribersChange})</div>
+                                                    <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">Subscribers (Above average {overview[demographyPlatform].subscribersChange})</div>
                                                 )}
                                                 {language === 'en' && (
-                                                    <div className="text-[9px] sm:text-[10px] text-gray-500/70 italic mt-0.5 sm:mt-1">ผู้ติดตาม (มากกว่าปกติ {overview[demographyPlatform].subscribersChange})</div>
+                                                    <div className="text-[9px] sm:text-[10px] text-slate-600/90 italic mt-0.5 sm:mt-1">ผู้ติดตาม (มากกว่าปกติ {overview[demographyPlatform].subscribersChange})</div>
                                                 )}
                                             </div>
                                         </div>
+
+                                        {(overview[demographyPlatform].peakTime || overview[demographyPlatform].trafficSources?.length > 0) && (
+                                            <div className="mt-3 sm:mt-4 md:mt-5 grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+                                                {overview[demographyPlatform].peakTime && (
+                                                    <article className="bg-rose-50/90 p-3 sm:p-4 rounded-md sm:rounded-lg border border-pink-100">
+                                                        <h4 className="text-sm sm:text-base font-bold text-slate-800 mb-1.5 sm:mb-2">
+                                                            {language === 'th' ? 'Peak Time' : 'Peak Time'}
+                                                        </h4>
+                                                        <p className="text-[10px] sm:text-xs text-slate-600 mb-2">
+                                                            {language === 'th'
+                                                                ? overview[demographyPlatform].peakTime.descriptionTh
+                                                                : overview[demographyPlatform].peakTime.descriptionEn}
+                                                        </p>
+                                                        <div className="flex items-end justify-between gap-3">
+                                                            <span className="text-2xl sm:text-3xl font-extrabold text-slate-800">
+                                                                {overview[demographyPlatform].peakTime.time}
+                                                            </span>
+                                                            <span className="text-xs sm:text-sm text-slate-600">
+                                                                {language === 'th'
+                                                                    ? overview[demographyPlatform].peakTime.topDateTh
+                                                                    : overview[demographyPlatform].peakTime.topDateEn}
+                                                            </span>
+                                                        </div>
+                                                    </article>
+                                                )}
+
+                                                {overview[demographyPlatform].trafficSources?.length > 0 && (
+                                                    <article className="bg-rose-50/90 p-3 sm:p-4 rounded-md sm:rounded-lg border border-pink-100">
+                                                        <h4 className="text-sm sm:text-base font-bold text-slate-800 mb-2 sm:mb-3">
+                                                            {language === 'th' ? 'ที่มาของยอดเข้าชม' : 'Traffic Sources'}
+                                                        </h4>
+                                                        <div className="space-y-2.5 sm:space-y-3">
+                                                            {overview[demographyPlatform].trafficSources.map((source, sourceIndex) => (
+                                                                <div key={sourceIndex}>
+                                                                    <div className="flex items-center justify-between text-[11px] sm:text-xs mb-1">
+                                                                        <span className="text-slate-700">
+                                                                            {language === 'th' ? source.label : (source.labelEn || source.label)}
+                                                                        </span>
+                                                                        <span className="font-bold text-slate-800">{source.value}%</span>
+                                                                    </div>
+                                                                    <div className="w-full h-2 rounded-full bg-slate-200/80 overflow-hidden">
+                                                                        <div
+                                                                            className="h-full rounded-full bg-gradient-to-r from-sky-400 to-pink-400"
+                                                                            style={{ width: `${Math.min(source.value, 100)}%` }}
+                                                                        ></div>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </article>
+                                                )}
+                                            </div>
+                                        )}
                                     </section>
                                 )}
 
                                 {/* Demography Data with Charts */}
                                 <div className="space-y-2.5 sm:space-y-3 md:space-y-4" role="region" aria-label="Demography Charts">
                                     {demography[demographyPlatform]?.map((demo, idx) => (
-                                        <article key={idx} className="bg-gray-700/30 p-2.5 sm:p-3 md:p-4 lg:p-5 rounded-md sm:rounded-lg md:rounded-xl border border-gray-700 hover:border-pink-500/50 transition-colors" role="article" aria-label={`${demo.label} Chart`}>
+                                        <article key={idx} className="bg-pink-50/80 p-2.5 sm:p-3 md:p-4 lg:p-5 rounded-md sm:rounded-lg md:rounded-xl border border-pink-100 hover:border-pink-500/50 transition-colors" role="article" aria-label={`${demo.label} Chart`}>
                                             <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
-                                                <div className="p-1.5 sm:p-2 md:p-3 bg-white/5 rounded-md sm:rounded-lg flex-shrink-0" aria-hidden="true">
+                                                <div className="p-1.5 sm:p-2 md:p-3 bg-pink-100/60 rounded-md sm:rounded-lg flex-shrink-0" aria-hidden="true">
                                                     <BarChart3 className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${demo.iconColor}`} />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
@@ -752,42 +814,10 @@ const App = () => {
                                     ))}
                                 </div>
                             </section>
-                        ) : activeTab === 'portfolio' ? (
-                            <section className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 md:gap-4" aria-label="Portfolio - Sample Works">
-                                {portfolio.map((item, idx) => (
-                                    <a
-                                        key={idx}
-                                        href={item.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={`View ${item.title} on YouTube`}
-                                        className="bg-gray-700/30 rounded-md sm:rounded-lg md:rounded-xl border border-gray-700 hover:border-pink-500/50 transition-all group overflow-hidden block focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800 active:bg-gray-700/50"
-                                    >
-                                        <div className="relative aspect-video overflow-hidden">
-                                            <img
-                                                src={item.thumbnail}
-                                                alt={`Thumbnail for ${item.title}`}
-                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                loading="lazy"
-                                                onError={(e) => {
-                                                    e.target.src = 'https://placehold.co/640x360/1a1a1a/FFF?text=No+Thumbnail';
-                                                }}
-                                            />
-                                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center" aria-hidden="true">
-                                                <ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                                            </div>
-                                        </div>
-                                        <div className="p-2.5 sm:p-3 md:p-4">
-                                            <h4 className="font-bold text-sm sm:text-base md:text-lg mb-0.5 sm:mb-1 group-hover:text-pink-400 transition-colors break-words line-clamp-2">{item.title}</h4>
-                                            <p className="text-[10px] sm:text-xs md:text-sm text-gray-400 break-words">{item.description}</p>
-                                        </div>
-                                    </a>
-                                ))}
-                            </section>
                         ) : (
-                            <section className="space-y-2.5 sm:space-y-3 md:space-y-4 text-[11px] sm:text-xs md:text-sm text-gray-300" aria-label="Terms and Conditions">
+                            <section className="space-y-2.5 sm:space-y-3 md:space-y-4 text-[11px] sm:text-xs md:text-sm text-slate-700" aria-label="Terms and Conditions">
                                 {terms.map((term, idx) => (
-                                    <article key={idx} className="p-2.5 sm:p-3 md:p-4 bg-gray-700/30 rounded-md sm:rounded-lg border border-gray-700" role="article">
+                                    <article key={idx} className="p-2.5 sm:p-3 md:p-4 bg-pink-50/80 rounded-md sm:rounded-lg border border-pink-100" role="article">
                                         <h4 className={`font-bold ${profile.themeColor} mb-1.5 sm:mb-2 text-xs sm:text-sm md:text-base`}>
                                             {language === 'th' ? term.title : (term.titleEn || term.title)}
                                         </h4>
@@ -795,12 +825,12 @@ const App = () => {
                                             {language === 'th' ? term.content : (term.contentEn || term.content)}
                                         </p>
                                         {language === 'th' && term.contentEn && (
-                                            <p className="break-words leading-relaxed text-[10px] sm:text-[11px] text-gray-400/80 italic border-t border-gray-600/50 pt-1.5 sm:pt-2">
+                                            <p className="break-words leading-relaxed text-[10px] sm:text-[11px] text-slate-600/90 italic border-t border-pink-200/50 pt-1.5 sm:pt-2">
                                                 {term.contentEn}
                                             </p>
                                         )}
                                         {language === 'en' && term.content && (
-                                            <p className="break-words leading-relaxed text-[10px] sm:text-[11px] text-gray-400/80 italic border-t border-gray-600/50 pt-1.5 sm:pt-2">
+                                            <p className="break-words leading-relaxed text-[10px] sm:text-[11px] text-slate-600/90 italic border-t border-pink-200/50 pt-1.5 sm:pt-2">
                                                 {term.content}
                                             </p>
                                         )}
@@ -818,7 +848,7 @@ const App = () => {
                         className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 md:bottom-4 md:right-4 z-40 print:hidden"
                         aria-label={`Last updated: ${new Date(lastUpdated).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}`}
                     >
-                        <div className="text-[10px] sm:text-xs text-gray-400/80 bg-black/40 backdrop-blur-sm p-1.5 sm:p-2 md:p-2.5 rounded-md sm:rounded-lg border border-white/10 shadow-lg max-w-[calc(100vw-2rem)] sm:max-w-none">
+                        <div className="text-[10px] sm:text-xs text-slate-600/90 bg-pink-50/90 backdrop-blur-sm p-1.5 sm:p-2 md:p-2.5 rounded-md sm:rounded-lg border border-pink-200/60 shadow-lg max-w-[calc(100vw-2rem)] sm:max-w-none">
                             {language === 'th' ? (
                                 <div className="text-center break-words sm:whitespace-nowrap">อัพเดตล่าสุด: {new Date(lastUpdated).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                             ) : (
@@ -832,49 +862,49 @@ const App = () => {
             {/* Service Details Modal */}
             {isModalOpen && selectedService && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-pink-100/80 backdrop-blur-sm animate-in fade-in duration-300"
                     onClick={closeServiceModal}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-title"
                 >
                     <div
-                        className="bg-gray-800 rounded-xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar border border-gray-700 animate-in zoom-in-95 duration-300 m-2 sm:m-4"
+                        className="bg-rose-50 rounded-xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar border border-pink-100 animate-in zoom-in-95 duration-300 m-2 sm:m-4"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal Header */}
-                        <div className="sticky top-0 bg-gray-800/95 backdrop-blur-sm border-b border-gray-700 p-3 sm:p-4 md:p-6 flex items-start justify-between gap-2 sm:gap-4 z-10">
+                        <div className="sticky top-0 bg-rose-50/95 backdrop-blur-sm border-b border-pink-100 p-3 sm:p-4 md:p-6 flex items-start justify-between gap-2 sm:gap-4 z-10">
                             <div className="flex items-start gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0">
-                                <div className="p-2 sm:p-3 bg-white/5 rounded-lg text-white flex-shrink-0">
+                                <div className="p-2 sm:p-3 bg-pink-100/60 rounded-lg text-pink-600 flex-shrink-0">
                                     {getServiceIcon(selectedService.title)}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h2 id="modal-title" className="font-bold text-lg sm:text-xl md:text-2xl mb-1 sm:mb-2 break-words text-white">
+                                    <h2 id="modal-title" className="font-bold text-lg sm:text-xl md:text-2xl mb-1 sm:mb-2 break-words text-slate-800">
                                         {selectedService.title}
                                     </h2>
-                                    <p className="text-xs sm:text-sm md:text-base text-gray-400 break-words">
+                                    <p className="text-xs sm:text-sm md:text-base text-slate-600 break-words">
                                         {language === 'th' ? selectedService.description : (selectedService.descriptionEn || selectedService.description)}
                                     </p>
                                 </div>
                             </div>
                             <button
                                 onClick={closeServiceModal}
-                                className="p-2 hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-pink-400 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                className="p-2 hover:bg-pink-100 rounded-lg transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-pink-400 min-w-[44px] min-h-[44px] flex items-center justify-center"
                                 aria-label="Close modal"
                             >
-                                <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 hover:text-white" />
+                                <X className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600 hover:text-pink-600" />
                             </button>
                         </div>
 
                         {/* Modal Content */}
                         <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-5 md:space-y-6">
                             {/* Price */}
-                            <div className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-pink-500/30">
+                            <div className="bg-gradient-to-r from-pink-100 to-sky-100 p-3 sm:p-4 rounded-lg sm:rounded-xl border border-pink-200">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+                                    <span className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-800">
                                         {selectedService.price}
                                     </span>
-                                    <span className="text-xs sm:text-sm md:text-base text-gray-400">
+                                    <span className="text-xs sm:text-sm md:text-base text-slate-600">
                                         {selectedService.unit}
                                     </span>
                                 </div>
@@ -893,16 +923,16 @@ const App = () => {
                                                     <div className="w-1.5 h-1.5 rounded-full bg-pink-400"></div>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm sm:text-base text-gray-300 break-words leading-relaxed">
+                                                    <p className="text-sm sm:text-base text-slate-700 break-words leading-relaxed">
                                                         {language === 'th' ? detail : (selectedService.detailsEn && selectedService.detailsEn[i] ? selectedService.detailsEn[i] : detail)}
                                                     </p>
                                                     {language === 'th' && selectedService.detailsEn && selectedService.detailsEn[i] && (
-                                                        <p className="text-xs sm:text-sm text-gray-500/80 mt-1 italic break-words">
+                                                        <p className="text-xs sm:text-sm text-slate-600/90 mt-1 italic break-words">
                                                             {selectedService.detailsEn[i]}
                                                         </p>
                                                     )}
                                                     {language === 'en' && detail && (
-                                                        <p className="text-xs sm:text-sm text-gray-500/80 mt-1 italic break-words">
+                                                        <p className="text-xs sm:text-sm text-slate-600/90 mt-1 italic break-words">
                                                             {detail}
                                                         </p>
                                                     )}
@@ -915,10 +945,10 @@ const App = () => {
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="sticky bottom-0 bg-gray-800/95 backdrop-blur-sm border-t border-gray-700 p-3 sm:p-4 md:p-6">
+                        <div className="sticky bottom-0 bg-rose-50/95 backdrop-blur-sm border-t border-pink-100 p-3 sm:p-4 md:p-6">
                             <button
                                 onClick={closeServiceModal}
-                                className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all shadow-lg shadow-pink-500/20 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800 active:scale-95 min-h-[44px] text-sm sm:text-base"
+                                className="w-full bg-gradient-to-r from-pink-500 to-sky-500 hover:from-pink-600 hover:to-sky-600 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-all shadow-lg shadow-pink-500/20 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-white active:scale-95 min-h-[44px] text-sm sm:text-base"
                             >
                                 {language === 'th' ? 'ปิด' : 'Close'}
                             </button>

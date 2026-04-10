@@ -184,7 +184,13 @@ Vtuber-RateCards/
 
 1. Push โค้ดไปยัง GitHub
 2. เชื่อมต่อ Vercel กับ GitHub repository
-3. Vercel จะ build และ deploy อัตโนมัติ
+3. ตั้งค่า Project เป็น Framework: `Vite` (ถ้าไม่ detect อัตโนมัติ)
+4. ตรวจสอบค่า Build:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+5. กด Deploy (หลังจากนั้นทุกครั้งที่ push จะ deploy อัตโนมัติ)
+
+> โปรเจกต์นี้มีไฟล์ `vercel.json` ให้แล้ว (build command, output directory, SPA rewrite และ cache headers)
 
 ### Netlify
 
